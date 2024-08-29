@@ -1,11 +1,4 @@
-/*
-O código abaixo apresenta a implementação de uma lista linear.
 
-Para esse exemplo, faça:
-- Implemente funções adicionais como buscar(int elemento) para encontrar a posição de um elemento na lista.
-ou 
-- Adicione métodos para inverter a lista, encontrar o máximo/mínimo, ou ordenar a lista.
-*/
 
 #include <stdio.h>
 #define MAX_SIZE 10
@@ -38,6 +31,25 @@ void imprimir() {
         printf("%d ", lista[i]);
     }
     printf("\n");
+}
+
+int encontrarPosição(int elemento)
+{
+    int aux, index;
+    
+    index = 0;
+    
+    aux = lista[index];
+    
+    while(aux != elemento)
+    {
+        index++;
+        aux = lista[index]
+    }
+    
+    printf("O valor desejado se encontrava na posição %d da lista", index);
+    
+    
 }
 
 int main() {
