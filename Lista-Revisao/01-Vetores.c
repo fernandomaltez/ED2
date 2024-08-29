@@ -31,7 +31,7 @@ int main()
     //nesse caso o vetor possui um numero impar de casas
     else
     {
-        for (i = 0; i < ((n-1)/2); i++) {
+        for (i = 0; i < ((n+1)/2); i++) {
         temp = vetor[i];
         vetor[i] = vetor[n - i];
         vetor[n - i] = temp;
