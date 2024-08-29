@@ -33,7 +33,7 @@ void imprimir() {
     printf("\n");
 }
 
-int encontrarPosição(int elemento)
+void encontrarPosição(int elemento)
 {
     int aux, index;
     
@@ -47,7 +47,7 @@ int encontrarPosição(int elemento)
         aux = lista[index]
     }
     
-    printf("O valor desejado se encontrava na posição %d da lista", index);
+    printf("O valor %d se encontrava na posição %d da lista",elemento, index);
     
     
 }
