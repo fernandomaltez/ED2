@@ -9,6 +9,7 @@ O código apresenta uma lista duplamente ligada com operações básicas para in
 #include <stdio.h>
 #include <stdlib.h>
 
+//criando o tipo abstrato de dado "nó", que possui como atributos 
 typedef struct Node {
     int data;
     struct Node* next;
