@@ -44,10 +44,10 @@ void encontrarPosição(int elemento)
     while(aux != elemento)
     {
         index++;
-        aux = lista[index]
+        aux = lista[index];
     }
     
-    printf("O valor %d se encontrava na posição %d da lista",elemento, index);
+    printf("O valor %d se encontrava na posição %d da lista", elemento, index);
     
     
 }
@@ -59,5 +59,6 @@ int main() {
     imprimir();
     remover(1);
     imprimir();
+    encontrarPosição(10);
     return 0;
 }
