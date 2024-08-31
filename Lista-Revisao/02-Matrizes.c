@@ -11,9 +11,12 @@ int main() {
     
     int matriz[n][n];
 
-    printf("Insira os elementos da matriz %dx%d:\n", n, n);
+    
     for (i = 0; i < n; i++) {
-        for (j = 0; j < n; j++) {
+        for (j = 0; j < n; j++) 
+        {
+            printf("Insira o elemento da posição %dx%d:\n", (i+1), (j+1));
+            
             scanf("%d", &matriz[i][j]);
             if (i == j) {
                 soma += matriz[i][j];
