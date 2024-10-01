@@ -1,0 +1,193 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define TAMANHO_HASH 10
+
+// Estrutura para representar uma transação financeira
+typedef struct {
+    int id;               
+    char endereco[50];       
+    float tam_pacote;   
+    int tempo_entrega;   
+    int ocupada; 
+} Entrega;
+
+// Estrutura da Tabela Hash
+typedef struct {
+    Entrega tabela[TAMANHO_HASH];  // Array de transações
+} TabelaHash;
+
+// Função Hash: Retorna o índice baseado no ID da transação
+int funcao_hash(int id) {
+    return id % TAMANHO_HASH;  // Usa módulo para determinar a posição na tabela
+}
+
+// Função hash para duplo hashing
+int hash2(int id) {
+    return 7 - (id % 7);  // Segunda função hash para duplo hashing
+}
+
+// Sondagem linear
+int sondagem_linear(TabelaHash *tabela, int id) {
+    int indice = funcao_hash(id);
+    int tentativas = 0;
+
+    while (tabela->tabela[indice].ocupada && tentativas < TAMANHO_HASH) {
+        indice = (indice + 1) % TAMANHO_HASH;  // Avança linearmente
+        tentativas++;
+    }
+
+    return (tentativas < TAMANHO_HASH) ? indice : -1;  // Retorna o índice ou -1 se a tabela estiver cheia
+}
+
+// Sondagem quadrática
+int sondagem_quadratica(TabelaHash *tabela, int id) {
+    int indice = funcao_hash(id);
+    int i = 1;
+    int tentativas = 0;
+
+    while (tabela->tabela[indice].ocupada && tentativas < TAMANHO_HASH) {
+        indice = (funcao_hash(id) + i * i) % TAMANHO_HASH;  // Avança quadraticamente
+        i++;
+        tentativas++;
+    }
+
+    return (tentativas < TAMANHO_HASH) ? indice : -1;  // Retorna o índice ou -1 se a tabela estiver cheia
+}
+
+// Duplo hashing
+int duplo_hashing(TabelaHash *tabela, int id) {
+    int indice = funcao_hash(id);
+    int step = hash2(id);
+    int tentativas = 0;
+
+    while (tabela->tabela[indice].ocupada && tentativas < TAMANHO_HASH) {
+        indice = (indice + step) % TAMANHO_HASH;  // Usa duplo hashing
+        tentativas++;
+    }
+
+    return (tentativas < TAMANHO_HASH) ? indice : -1;  // Retorna o índice ou -1 se a tabela estiver cheia
+}
+
+// Função para criar uma nova transação
+Entrega criar_entrega(int id, int tempo_entrega, const char *endereco, float tam_pacote) {
+    Entrega nova_entrega;
+    nova_entrega.id = id;
+    nova_entrega.tempo_entrega = tempo_entrega;
+    strcpy(nova_entrega.endereco, endereco);
+    nova_entrega.tam_pacote = tam_pacote;
+    nova_entrega.ocupada = 1;  // Marca o slot como ocupado
+    return nova_entrega;
+}
+
+// Função para inserir uma transação na tabela hash usando sondagem linear
+void inserir_linear(TabelaHash *tabela, Entrega entrega) {
+    int indice = funcao_hash(entrega.id);
+
+    // Se não houver colisão, insere diretamente
+    if (!tabela->tabela[indice].ocupada) {
+        tabela->tabela[indice] = entrega;
+    } else {
+        // Se houver colisão, chama a sondagem linear
+        int novo_indice = sondagem_linear(tabela, entrega.id);
+        if (novo_indice != -1) {
+            tabela->tabela[novo_indice] = entrega;
+        } else {
+            printf("Erro: Tabela hash está cheia.\n");
+        }
+    }
+}
+
+// Função para inserir uma transação na tabela hash usando sondagem quadrática
+void inserir_quadratica(TabelaHash *tabela, Entrega entrega) {
+    int indice = funcao_hash(entrega.id);
+
+    // Se não houver colisão, insere diretamente
+    if (!tabela->tabela[indice].ocupada) {
+        tabela->tabela[indice] = entrega;
+    } else {
+        // Se houver colisão, chama a sondagem quadrática
+        int novo_indice = sondagem_quadratica(tabela, entrega.id);
+        if (novo_indice != -1) {
+            tabela->tabela[novo_indice] = entrega;
+        } else {
+            printf("Erro: Tabela hash está cheia.\n");
+        }
+    }
+}
+
+// Função para inserir uma transação na tabela hash usando duplo hashing
+void inserir_duplo_hashing(TabelaHash *tabela, Entrega entrega) {
+    int indice = funcao_hash(entrega.id);
+
+    // Se não houver colisão, insere diretamente
+    if (!tabela->tabela[indice].ocupada) {
+        tabela->tabela[indice] = entrega;
+    } else {
+        // Se houver colisão, chama o duplo hashing
+        int novo_indice = duplo_hashing(tabela, entrega.id);
+        if (novo_indice != -1) {
+            tabela->tabela[novo_indice] = entrega;
+        } else {
+            printf("Erro: Tabela hash está cheia.\n");
+        }
+    }
+}
+
+// Função para exibir todas as transações
+void exibir_todas(TabelaHash *tabela) {
+    for (int i = 0; i < TAMANHO_HASH; i++) {
+        if (tabela->tabela[i].ocupada) {
+            printf("Transação ID: %d, Tempo Entrega: %d, Endereco: %s, Tamanho Pacote: %.2f (Índice: %d)\n",
+                   tabela->tabela[i].id, tabela->tabela[i].tempo_entrega, tabela->tabela[i].endereco, tabela->tabela[i].tam_pacote, i);
+        }
+    }
+}
+
+
+// Função de busca
+
+
+// Função de exclusão
+
+
+// Função principal para demonstrar o uso da tabela hash com sondagem
+int main() {
+    // Inicializa a tabela hash
+    TabelaHash tabela_linear = {0};  // Todos os slots começam desocupados
+
+    // Inserir transações na tabela hash usando sondagem linear
+    printf("\nInserção com Sondagem Linear:\n");
+    inserir_linear(&tabela_linear, criar_entrega(101, 2, "São Paulo", 0.8));
+    inserir_linear(&tabela_linear, criar_entrega(102, 7, "Rio de Janeiro", 2.5));
+    inserir_linear(&tabela_linear, criar_entrega(103, 12, "Parnaiba", 1.2));
+    inserir_linear(&tabela_linear, criar_entrega(104, 15, "Bodoco", 25.8));
+    inserir_linear(&tabela_linear, criar_entrega(105, 4, "Goiania", 7.9));
+
+    exibir_todas(&tabela_linear);
+
+    // Inserir transações na tabela hash usando sondagem quadrática
+    printf("\nInserção com Sondagem Quadrática:\n");
+    TabelaHash tabela_quadratica = {0};
+    inserir_quadratica(&tabela_quadratica, criar_entrega(106, 25, "Paris", 15.8));
+    inserir_quadratica(&tabela_quadratica, criar_entrega(107, 30, "Berlim", 19.3));
+    inserir_quadratica(&tabela_quadratica, criar_entrega(108, 18, "Madri", 0.3));
+    inserir_quadratica(&tabela_quadratica, criar_entrega(109, 45, "Londres", 1.0));
+    inserir_quadratica(&tabela_quadratica, criar_entrega(110, 19, "Roma", 3.7));
+
+    exibir_todas(&tabela_quadratica);
+
+    // Inserir transações na tabela hash usando duplo hashing
+    printf("\nInserção com Duplo Hashing:\n");
+    TabelaHash tabela_duplo = {0};
+    inserir_duplo_hashing(&tabela_duplo, criar_entrega(111, 31, "Zurique", 0.9));
+    inserir_duplo_hashing(&tabela_duplo, criar_entrega(112, 50, "Pequim", 2.0));
+    inserir_duplo_hashing(&tabela_duplo, criar_entrega(113, 65, "Tóquio", 5.3));
+    inserir_duplo_hashing(&tabela_duplo, criar_entrega(114, 70, "Sydney", 7.3));
+    inserir_duplo_hashing(&tabela_duplo, criar_entrega(115, 31, "Cidade do México", 8.8));
+
+    exibir_todas(&tabela_duplo);
+
+    return 0;
+}
