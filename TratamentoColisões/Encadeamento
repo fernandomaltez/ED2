@@ -1,1 +1,179 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+#define TAMANHO_HASH 10
+
+// Estrutura para representar uma entrega
+typedef struct Entrega {
+    int id;               
+    float tam_pacote;          
+    char endereco[50]; 
+    int tempo_entrega
+    struct Transacao *proximo; 
+} Entrega;
+
+// Estrutura da Tabela Hash
+typedef struct {
+    Entrega *tabela[TAMANHO_HASH];  
+} TabelaHash;
+
+// Função Hash: Retorna o índice baseado no ID da entrega
+int funcao_hash(int id) {
+    return id % TAMANHO_HASH;  
+}
+
+// Função para criar uma nova entrega
+Entrega *criar_entrega(int id, float tam_pacote, const char *endereco, int tempo_entrega) {
+    Entrega *nova_entrega = (Entrega *)malloc(sizeof(Entrega));
+    if (nova_entrega == NULL) {
+        printf("Erro ao alocar memória!\n");
+        exit(1);
+    }
+    nova_entrega->id = id;
+    nova_entrega->tam_pacote = tam_pacote;
+    strcpy(nova_entrega->endereco, endereco);
+    nova_entrega->tempo_entrega = tempo_entrega;
+    nova_entrega->proximo = NULL;
+    return nova_entrega;
+}
+
+// Função para inserir uma entrega na tabela hash (usando listas ligadas para colisões)
+void inserir(TabelaHash *tabela, Entrega *entrega) {
+    int indice = funcao_hash(entrega->id);  
+    entrega->proximo = tabela->tabela[indice];  
+    tabela->tabela[indice] = entrega;
+}
+
+// Função para exibir todas as entregas
+void exibir_todas(TabelaHash *tabela) {
+    for (int i = 0; i < TAMANHO_HASH; i++) {
+        Entrega *atual = tabela->tabela[i];
+        while (atual != NULL) {
+            printf("Entrega ID: %d, Tamanho: %.2f, Endereço: %s, Tempo para Entrega: %d (Índice: %d)\n",
+                   atual->id, atual->tam_pacote, atual->endereco, atual->tempo_entrega, i);
+            atual = atual->proximo;  
+        }
+    }
+}
+
+// Função para buscar uma entrega na tabela hash pelo ID
+Entrega *buscar(TabelaHash *tabela, int id) {
+    int indice = funcao_hash(id);  
+    Entrega *atual = tabela->tabela[indice];
+    
+    while (atual != NULL) {
+        if (atual->id == id) {
+            return atual;  
+        }
+        atual = atual->proximo;  
+    }
+    return NULL;  
+}
+
+// Função para excluir uma entrega na tabela hash pelo ID
+void excluir(TabelaHash *tabela, int id) {
+    int indice = funcao_hash(id);  
+    Entrega *atual = tabela->tabela[indice];
+    Entrega *anterior = NULL;
+
+    while (atual != NULL) {
+        if (atual->id == id) {
+            if (anterior == NULL) {
+                tabela->tabela[indice] = atual->proximo;  
+            } else {
+                anterior->proximo = atual->proximo;  
+            }
+            free(atual); 
+            printf("Entrega com ID %d foi excluída.\n", id);
+            return;
+        }
+        anterior = atual;
+        atual = atual->proximo;
+    }
+    printf("Entrega com ID %d não encontrada para exclusão.\n", id);
+}
+
+// Função para contar o número total de elementos (entregas) na tabela hash
+int contar_elementos(TabelaHash *tabela) {
+    int total = 0;
+
+    
+    for (int i = 0; i < TAMANHO_HASH; i++) {
+        Entrega *atual = tabela->tabela[i];
+
+        
+        while (atual != NULL) {
+            total++; 
+            atual = atual->proximo;  
+        }
+    }
+
+    return total;
+}
+
+
+// Função para inserir 20 entregas predefinidas na tabela hash
+void inserir_dados_predefinidos(TabelaHash *tabela) {
+    
+    inserir(tabela, criar_entrega(101, 10.50, "São Paulo", 3));
+    inserir(tabela, criar_entrega(102, 2.75, "Rio de Janeiro", 6));
+    inserir(tabela, criar_entrega(103, 50.00, "Miami", 9));
+    inserir(tabela, criar_entrega(104, 15.00, "Lisboa", 12));
+    inserir(tabela, criar_entrega(105, 20.25, "Nova York", 20));
+    inserir(tabela, criar_entrega(106, 7.00, "Paris", 25));
+    inserir(tabela, criar_entrega(107, 30.50, "Berlim", 23));
+    inserir(tabela, criar_entrega(108, 8.00, "Madri", 13));
+    inserir(tabela, criar_entrega(109, 9.75, "Londres", 24));
+    inserir(tabela, criar_entrega(110, 12.40, "Roma", 19));
+    inserir(tabela, criar_entrega(111, 45.25, "Zurique", 29));
+    inserir(tabela, criar_entrega(112, 1.00, "Pequim", 50));
+    inserir(tabela, criar_entrega(113, 6.75, "Tóquio", 55));
+    inserir(tabela, criar_entrega(114, 2.20, "Sydney", 60));
+    inserir(tabela, criar_entrega(115, 37.30, "Cidade do México", 18));
+    inserir(tabela, criar_entrega(116, 5.00, "Seul", 47));
+    inserir(tabela, criar_entrega(117, 4.45, "Santiago", 8));
+    inserir(tabela, criar_entrega(118, 9.10, "Amsterdã", 27));
+    inserir(tabela, criar_entrega(119, 1.70, "Viena", 30));
+    inserir(tabela, criar_entrega(120, 3.55, "Dubai", 34));
+
+    printf("Entregas foram inseridas com sucesso.\n");
+}
+
+
+// Função principal para demonstrar o uso da tabela hash com entregas
+int main() {
+    
+    TabelaHash tabela = {NULL};
+
+    
+    inserir_dados_predefinidos(&tabela);
+    
+    
+    printf("\nTodas as entregas inseridas: %d\n", contar_elementos(&tabela));
+    exibir_todas(&tabela);
+
+    
+    
+    printf("\nBuscar uma Entrega:\n");
+    Entrega *t = buscar(&tabela, 102);
+    if (t != NULL) {
+        printf("Entrega encontrada: ID: %d, Tamanho: %.2f, Local: %s, Tempo: %d\n",
+               t->id, t->tam_pacote, t->endereco, t->tempo_entrega);
+    } else {
+        printf("Entrega não encontrada.\n");
+    }
+    
+    
+    
+    printf("\nEntrega excluidas:\n");
+    excluir(&tabela, 119);
+    
+    
+   
+    printf("\nEntregas Atualizadas: %d\n", contar_elementos(&tabela));
+    exibir_todas(&tabela);
+    
+
+    return 0;
+}
