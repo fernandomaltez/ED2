@@ -81,10 +81,6 @@ int binarySearch(Product products[], int low, int high, const char* target) {
     return -1; // Produto não encontrado (modificar conforme a implementação)
 }
 
-// Função de ordenação para os produtos (usada para a busca binária)
-int compareProducts(const void* a, const void* b) {
-    return strcmp(((Product*)a)->name, ((Product*)b)->name);
-}
 
 // Função principal
 int main() {
@@ -111,9 +107,6 @@ int main() {
     } else {
         printf("Produto não encontrado na busca sequencial.\n");
     }
-
-    // Ordena a lista de produtos para a busca binária
-    qsort(products, numProducts, sizeof(Product), compareProducts);
 
     // Espaço para o realizar a busca binária
     printf("\nBusca binária pelo produto '%s':\n", target);
