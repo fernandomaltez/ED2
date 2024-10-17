@@ -1,3 +1,87 @@
+Pular para o conteúdo principal
+Google Sala de AulaGoogle Sala de Aula
+Estrutura de Dados IIEngenharia de Computação
+Início
+Agenda
+Minhas inscrições
+Pendentes
+2
+2024-2 - Empreendedorismo - VESPERTINO
+VESPERTINO
+E
+Estrutura de Dados II
+Engenharia de Computação
+2
+2021.2 Lógica
+EMC
+U
+UFG Lógica 2022 1
+EMC
+2
+23.1 LÓGICA
+Engenharia de Computação
+Turmas arquivadas
+Configurações
+Detalhes da atividade
+Exercício: Pesquisa Sequencial e Binária
+Bruna Michelly de Oliveira Silva
+•
+11:25 (editado: 13:54)
+100 pontos
+Data de entrega: 29 de out., 23:59
+Otimização de Busca em Catálogo de Produtos para E-commerce
+
+Contexto:
+
+Você foi contratado por uma grande empresa de e-commerce para otimizar a pesquisa de produtos no sistema deles. Eles possuem um catálogo de produtos que cresce constantemente e precisa de uma solução eficiente para buscas frequentes.
+Atualmente, a empresa utiliza uma lista de produtos não ordenada para buscas rápidas, mas o desempenho tem caído com o aumento do número de itens. Sua missão é melhorar esse sistema utilizando estruturas de dados e algoritmos eficientes.
+Descrição do Problema:
+
+A empresa lhe apresentou dois cenários:
+
+    Cenário Atual: A lista de produtos não está ordenada e as buscas são feitas de forma sequencial. Você precisa otimizar a busca e sugerir melhorias.
+    Novo Cenário: A empresa concordou em ordenar a lista de produtos. Sua tarefa é implementar a busca binária para melhorar o desempenho e medir os resultados.
+
+Tarefas:
+
+Implementação de Busca Sequencial:
+
+    Implementar uma função que realiza a busca sequencial pelo nome do produto em uma lista não ordenada.
+    Medir o tempo de execução da busca em diferentes tamanhos de listas (e.g., 1000, 5000, 10.000 produtos).
+
+Implementação de Busca Binária:
+
+    Ordenar a lista de produtos e implementar a busca binária.
+    Realizar testes de tempo de execução da busca binária nos mesmos tamanhos de listas.
+
+Comparação de Desempenho:
+
+    Comparar o tempo de execução e a eficiência das duas abordagens em diferentes cenários.
+    Justificar qual abordagem seria mais indicada para o sistema de e-commerce.
+
+Desafio Adicional (Opcional) :
+
+    Imagine que a lista de produtos é atualizada frequentemente, com novos produtos sendo adicionados e removidos. Como você adaptaria o sistema para manter a eficiência da busca?
+
+Entrega:
+
+    Código das duas implementações (sequencial e binária).
+    Relatório com a análise de desempenho e justificativa da melhor solução para a empresa.
+
+Materiais Disponíveis
+
+    Estrutura base do código fonte.
+
+buscaSequencialBinária.c
+C
+buscaSequencialBinária-corrigido.c
+C
+Comentários da turma
+Seus trabalhos
+Atribuído
+Não é possível entregar atividades após a data de entrega
+Comentários particulares
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -81,6 +165,11 @@ int binarySearch(Product products[], int low, int high, const char* target) {
     return -1; // Produto não encontrado (modificar conforme a implementação)
 }
 
+int compareByName(const void* a, const void* b) {
+    Product* productA = (Product*)a;
+    Product* productB = (Product*)b;
+    return strcmp(productA->name, productB->name);
+}
 
 // Função principal
 int main() {
@@ -108,6 +197,10 @@ int main() {
         printf("Produto não encontrado na busca sequencial.\n");
     }
 
+	// Ordenar a lista de produtos por nome usando qsort
+    // A função qsort é nativa da biblioteca <stdlib.h>
+	qsort(products, MAX_PRODUCTS, sizeof(Product), compareByName);
+
     // Espaço para o realizar a busca binária
     printf("\nBusca binária pelo produto '%s':\n", target);
     int binResult = binarySearch(products, 0, numProducts - 1, target);
@@ -120,3 +213,6 @@ int main() {
 
     return 0;
 }
+
+buscaSequencialBinária-corrigido.c
+Exibindo buscaSequencialBinária-corrigido.c…
